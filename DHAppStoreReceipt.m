@@ -92,6 +92,8 @@
                                                             version:receiptAttribute->version
                                                               value:attributeValue]];
     }
+    asn_DEF_Payload.free_struct(&asn_DEF_Payload, payload, 0);
+
     return attributes;
 }
 
@@ -153,7 +155,10 @@
         return nil;
     }
     ASN1_OCTET_STRING *octets = p7->d.sign->contents->d.data;
-    return [NSData dataWithBytes:octets->data length:(NSUInteger)octets->length];
+    NSData *octetsData = [NSData dataWithBytes:octets->data length:(NSUInteger)octets->length];
+    PKCS7_free(p7);
+
+    return octetsData;
 }
 
 - (DHInAppReceipt *)receiptForProductId:(NSString *)productId {
